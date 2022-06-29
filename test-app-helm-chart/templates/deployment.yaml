@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: test-app
+  name: {{ .Values.appName }}
   namespace: test-app-ns
 spec:
   selector:
     matchLabels:
-      app: test-app
+      app: {{ .Values.appName }}
   replicas: {{ .Values.replicaCount }}
   minReadySeconds: 15
   strategy:
@@ -23,16 +23,17 @@ spec:
         {{- end }}
     {{- end }}
       labels:
-        app: test-app
+        app: {{ .Values.appName }}
     spec:
       containers:
         - image: 239534/test_app:{{ .Values.container.tagVersion }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
-          name: test-app
+          name: {{ .Values.appName }}
           readinessProbe:
             periodSeconds: {{ .Values.probes.readinessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.probes.readinessProbe.initialDelaySeconds }}
             httpGet:
               path: /test_uri
               port: 5000
@@ -44,4 +45,4 @@ spec:
             periodSeconds: {{ .Values.probes.livenessProbe.periodSeconds }}
           ports:
             - containerPort: 5000
-      serviceAccountName: test-app-sa
+      serviceAccountName: {{ .Values.appName }}-sa
