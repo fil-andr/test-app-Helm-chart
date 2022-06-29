@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-app
+  namespace: test-app-ns
+spec:
+  selector:
+    matchLabels:
+      app: test-app
+  replicas: {{ .Values.replicaCount }}
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+    {{- if .Values.vaultEnabled }}
+      annotations:
+        {{- range $key, $val := .Values.annotations }}
+        {{ $key }}: {{ $val | quote }}
+        {{- end }}
+    {{- end }}
+      labels:
+        app: test-app
+    spec:
+      containers:
+        - image: 239534/test_app:{{ .Values.container.tagVersion }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          name: test-app
+          readinessProbe:
+            periodSeconds: {{ .Values.probes.readinessProbe.periodSeconds }}
+            httpGet:
+              path: /test_uri
+              port: 5000
+          livenessProbe:
+            httpGet:
+              path: /test_uri
+              port: 5000
+            initialDelaySeconds: {{ .Values.probes.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.livenessProbe.periodSeconds }}
+          ports:
+            - containerPort: 5000
+      serviceAccountName: test-app-sa

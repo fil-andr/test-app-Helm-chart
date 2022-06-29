@@ -1,0 +1,33 @@
+appName: test-app
+
+container:
+  tagVersion: latest
+
+imagePullPolicy: IfNotPresent
+replicaCount: 1
+
+resources:
+  requests:
+    memory: "20Mi"
+    cpu: "100m"
+  limits:
+    memory: "100Mi"
+    cpu: "300m"
+
+vaultEnabled: true
+
+annotations:
+  vault.security.banzaicloud.io/vault-addr: http://192.168.1.10:8200
+  vault.security.banzaicloud.io/vault-path: kubernetes
+  vault.security.banzaicloud.io/vault-role: test_role
+  vault.security.banzaicloud.io/vault-skip-verify: true
+
+
+probes:
+  readinessProbe:
+    periodSeconds: 11
+  livenessProbe:
+    initialDelaySeconds: 32
+    periodSeconds: 63
+
+ingressClass: nginx
