@@ -24,7 +24,18 @@ spec:
     {{- end }}
       labels:
         app: {{ .Values.appName }}
+        app.kubernetes.io/name: {{ .Values.appName }}-{{ .Values.container.tagVersion }}
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - {{ .Values.appName }}-{{ .Values.container.tagVersion }}
+            topologyKey: kubernetes.io/hostname
       containers:
         - image: 239534/test_app:{{ .Values.container.tagVersion }}
           resources:
