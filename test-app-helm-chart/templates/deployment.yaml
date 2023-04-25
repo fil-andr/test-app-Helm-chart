@@ -25,7 +25,7 @@ spec:
       labels:
         app: {{ .Values.appName }}
         app.kubernetes.io/name: {{ .Values.appName }}
-        app.kubernetes.io/version: {{ .Values.container.tagVersion }}
+        app.kubernetes.io/version: {{{ .Values.container.tagVersion | quote }}
     spec:
       affinity:
         podAntiAffinity:
@@ -39,7 +39,7 @@ spec:
               - key: "app.kubernetes.io/version"
                 operator: In
                 values:
-                - {{ .Values.container.tagVersion }}
+                - {{ .Values.container.tagVersion | quote }}
             topologyKey: kubernetes.io/hostname
       containers:
         - image: 239534/test_app:{{ .Values.container.tagVersion }}
