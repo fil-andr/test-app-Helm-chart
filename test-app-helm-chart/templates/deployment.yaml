@@ -39,7 +39,7 @@ spec:
               - key: "app.kubernetes.io/version"
                 operator: In
                 values:
-                - {{ quote .Values.container.tagVersion }}
+                - {{ .Values.container.tagVersion }}
             topologyKey: kubernetes.io/hostname
       containers:
         - image: 239534/test_app:{{ .Values.container.tagVersion }}
