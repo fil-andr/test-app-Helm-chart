@@ -25,7 +25,7 @@ spec:
       labels:
         app: {{ .Values.appName }}
         app.kubernetes.io/name: {{ .Values.appName }}
-        app.kubernetes.io/version: {{{ .Values.container.tagVersion | quote }}
+        app.kubernetes.io/version: {{ .Values.container.tagVersion | quote }}
     spec:
       affinity:
         podAntiAffinity:
