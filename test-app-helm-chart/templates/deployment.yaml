@@ -32,11 +32,11 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
               matchExpressions:
-              - key: app.kubernetes.io/name
+              - key: "app.kubernetes.io/name"
                 operator: In
                 values:
                 - {{ .Values.appName }}
-              - key: app.kubernetes.io/version
+              - key: "app.kubernetes.io/version"
                 operator: In
                 values:
                 - "{{ .Values.container.tagVersion }}"
