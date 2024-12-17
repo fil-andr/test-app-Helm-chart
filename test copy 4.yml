@@ -1,0 +1,36 @@
+- name: rm and install new version cilium
+  hosts: test-hosts
+  strategy: linear
+  gather_facts: False
+#  vars:
+#    TEST_VAR: {{ lookup('ansible.builtin.env', 'HOME') }}
+
+#  vars:
+#    test_password: !vault |
+#          $ANSIBLE_VAULT;1.1;AES256
+#          31646236623362373965383331383062616365623161383362653133333736303164636137343032
+#          3865323436633336353364363764643839336334646464620a303535613963386266656636346362
+#          62643037666135353539626331663036616336613434643364353837383864613133616165303233
+#          3232663838336230340a626261623465623837383131626261366332326536653632626438636662
+#          6361
+
+  tasks:
+
+  - name: Creates directory for cilium manifestd
+    run_once: true
+    file:
+      path: /tmp/{{ item }}
+      state: directory
+    with_items:
+     - "cilium_manifests"
+     - "cilium-helm-1-14-2"
+
+#  - name: ECHO VAR
+ #   run_once: true
+#    shell:
+ #     cmd: echo "{{ lookup('ansible.builtin.env', 'SSH_CONNECTION') }}/test/cilium/cilium:1.14"
+
+  - name: ECHO PASSWD
+    run_once: true
+    shell:
+      cmd: helm repo add nexus-helm-repo {{ lookup('ansible.builtin.env', 'HELM_REPO') }}/repository/helm-repo/ --username admin --password {{ lookup('ansible.builtin.env', 'passwd') }}
